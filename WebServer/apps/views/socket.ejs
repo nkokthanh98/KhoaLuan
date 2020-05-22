@@ -1,0 +1,12 @@
+<div class="container-fluid">
+    <button class="btn btn-success" id="btn">test</button>
+</div>
+
+<script>
+    $("#btn").click(() => {
+        let dvalue = Math.floor(Math.random() * 100);  
+        let dtype = Math.floor(Math.random() * 3) + 1;  
+        socket.emit("data-from-device", {type: dtype, value: dvalue});
+        console.log({type: dtype, value: dvalue});
+    });
+</script>

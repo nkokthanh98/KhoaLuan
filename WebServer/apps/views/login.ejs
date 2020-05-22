@@ -1,0 +1,36 @@
+<div class="row justify-content-center">
+    <div class="col-12 col-lg-4 col-md-8">
+        <form action="login" class="form-container txt-color-primary d-block" method="POST">
+            <div class="card">
+                <div class="card-header card-header-success">
+                    <h3 class="card-title text-center">Đăng nhập</h1>
+                </div>
+                <div class="card-body">
+                    <div class="form-group">
+                        <input type="text" id="usr" name="usr" class="form-control" placeholder="Tên đăng nhập"
+                            required>
+                    </div>
+                    <div class="form-group">
+                        <input type="password" id="pwd" name="pwd" class="form-control" placeholder="Mật khẩu" required>
+                    </div>
+                    <div class="form-group"
+                        <% if(!localData.error || localData.error.trim().length == 0){%>style="dislay:none" <%} %>>
+                        <% if(localData.error) {%>
+                        <p class="text-danger"> <%= localData.error %> </p>
+                        <% } %>
+                    </div>
+                    <div class="form-group"
+                        <% if(!localData.success || localData.success.trim().length == 0){%>style="dislay:none" <%} %>>
+                        <% if(localData.success) {%>
+                        <p class="text-success"> <%= localData.success %> </p>
+                        <% } %>
+                    </div>
+                    <div class="form-group">
+                        <button class="btn btn-success btn-block">Đăng nhập</button>
+                    </div>
+                    <a href="register">Đăng ký tài khoản</a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

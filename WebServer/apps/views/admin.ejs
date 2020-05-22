@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <%- include("elements/head"); -%>
+  <title><%- localData.pageTitle %></title>
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    var socket = io(location.host);
+    socket.on("newData", (data) => {
+      let type = data.type;
+      switch(type){
+        case 1: $("#soil-moisture").text("" + data.value);
+          break;
+        case 2: $("#temperature").text("" + data.value);
+          break;
+        case 3: $("#humidity").text("" + data.value);
+          break;
+        default: break;
+      }
+    });
+  </script>
+</head>
+
+<body class="dark-edition">
+  <div class="wrapper">
+
+    <!--Include Sidebar-->
+    <%- include("elements/sidebar"); -%>
+    <!--End Sidebar-->
+
+    <div class="main-panel">
+      <!-- Navbar -->
+      <%- include("elements/navbar"); -%>
+      <!-- End Navbar -->
+      <div class="content">
+        <div class="container-fluid">
+          <%- body%>
+        </div>
+      </div>
+      <!-- Footer -->
+      <%- include("elements/footer"); -%>
+      <!-- End Footer -->
+    </div>
+  </div>
+
+  <!-- Script -->
+  <%- include("elements/script"); -%>
+  <!-- End Script-->
+
+</body>
+
+</html>
