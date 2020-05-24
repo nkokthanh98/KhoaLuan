@@ -6,7 +6,7 @@ dhtPin = 4
 
 GPIO.setwarnings(False) # Ignore warning for now
 GPIO.setmode(GPIO.BOARD) # Use physical pin numbering
-GPIO.setup(dhtPin, GPIO.IN)
+GPIO.setup(dhtPin, GPIO.INPUT)
 
 dhtType = Adafruit_DHT.DHT22
 
