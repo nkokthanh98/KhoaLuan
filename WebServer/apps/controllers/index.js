@@ -105,10 +105,5 @@ router.get("/admin", (req, res) => {
     res.render("admin");
 });
 
-router.get("/test", (req, res) => {
-    let localData = { pageTitle: "test" };
-    res.render("socket", {layout: 'admin',localData});
-})
-
 
 module.exports = router;
