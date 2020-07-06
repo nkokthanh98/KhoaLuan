@@ -1,87 +1,227 @@
 <div class="row">
-    <div class="col-xl-4 col-lg-6 col-md-6 col-sm-6">
+    <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6">
         <div class="card card-stats">
             <div class="card-header card-header-success card-header-icon">
                 <div class="card-icon">
                     <i class="fa fa-tint" aria-hidden="true"></i>
                 </div>
-                <h3 id="soil-moisture" class="card-title"></h3>
-                <p class="card-category">Độ ẩm đất</p>
+                <h3 class="card-category">Độ ẩm đất</h3>
+                <h4 id="soil-moisture" class="card-title"></h4>
             </div>
         </div>
     </div>
-    <div class="col-xl-4 col-lg-6 col-md-6 col-sm-6">
+    <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6">
         <div class="card card-stats">
             <div class="card-header card-header-danger card-header-icon">
                 <div class="card-icon">
                     <i class="fa fa-thermometer-empty" aria-hidden="true"></i>
                 </div>
-                <h3 id="temperature" class="card-title"></h3>
-                <p class="card-category">Nhiệt độ</p>
+                <h3 class="card-category">Nhiệt độ</h3>
+                <h4 id="temperature" class="card-title"></h4>
+                
             </div>
         </div>
     </div>
-    <div class="col-xl-4 col-lg-6 col-md-6 col-sm-6">
+    <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6">
         <div class="card card-stats">
             <div class="card-header card-header-info card-header-icon">
                 <div class="card-icon">
                     <i class="fa fa-sun-o" aria-hidden="true"></i>
                 </div>
-                <h3 id="humidity" class="card-title"></h3>
-                <p class="card-category">Độ ẩm không khí</p>
+                <h3 class="card-category">Độ ẩm không khí</h3>
+                <h4 id="humidity" class="card-title"></h4>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6">
+        <div class="card card-stats">
+            <div class="card-header card-header-info card-header-icon">
+                <div class="card-icon">
+                    <i class="fa fa-tint" aria-hidden="true"></i>
+                </div>
+                <h3 class="card-title">Máy bơm</h3>
+                <label class="switch">
+                  <input type="checkbox" id="pump">
+                  <span class="slider round"></span>
+                </label>
             </div>
         </div>
     </div>
 </div>
 <div class="row">
-    <div class="col-xl-4 col-lg-12">
+    <div class="col-xl-12 col-lg-12">
         <div class="card card-chart">
             <div class="card-header card-header-success">
-                <div class="ct-chart" id="dailySalesChart"></div>
+                <canvas id="SoilMoistureChart" width="100%" height="25%"></canvas>
             </div>
             <div class="card-body">
-                <h4 class="card-title">Daily Sales</h4>
-                <p class="card-category">
-                    <span class="text-success"><i class="fa fa-long-arrow-up"></i> 55% </span> increase in today sales.
-                </p>
-            </div>
-            <div class="card-footer">
-                <div class="stats">
-                    <i class="material-icons">access_time</i> updated 4 minutes ago
-                </div>
+                <h4 class="card-title">Độ ẩm đất trung bình</h4>
+                <p id="avg-sm"></p>
             </div>
         </div>
     </div>
-    <div class="col-xl-4 col-lg-12">
-        <div class="card card-chart">
-            <div class="card-header card-header-warning">
-                <div class="ct-chart" id="websiteViewsChart"></div>
-            </div>
-            <div class="card-body">
-                <h4 class="card-title">Email Subscriptions</h4>
-                <p class="card-category">Last Campaign Performance</p>
-            </div>
-            <div class="card-footer">
-                <div class="stats">
-                    <i class="material-icons">access_time</i> campaign sent 2 days ago
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="col-xl-4 col-lg-12">
+    <div class="col-xl-12 col-lg-12">
         <div class="card card-chart">
             <div class="card-header card-header-danger">
-                <div class="ct-chart" id="completedTasksChart"></div>
+                <canvas id="TemperatureChart" width="100%" height="25%"></canvas>
             </div>
             <div class="card-body">
-                <h4 class="card-title">Completed Tasks</h4>
-                <p class="card-category">Last Campaign Performance</p>
+                <h4 class="card-title">Nhiệt độ trung bình</h4>
+                <p id="avg-t"></p>
             </div>
-            <div class="card-footer">
-                <div class="stats">
-                    <i class="material-icons">access_time</i> campaign sent 2 days ago
-                </div>
+        </div>
+    </div>
+    <div class="col-xl-12 col-lg-12">
+        <div class="card card-chart">
+            <div class="card-header card-header-info">
+                <canvas id="HumidityChart" width="100%" height="25%"></canvas>
+            </div>
+            <div class="card-body">
+                <h4 class="card-title">Độ ẩm không khí trung bình</h4>
+                <p id="avg-h"></p>
             </div>
         </div>
     </div>
 </div>
+<script>
+    $("#pump").change(function() {
+        if(this.checked){
+            socket.emit("pumper", {status: "A"});
+            console.log("ON");
+        }
+        else {
+            socket.emit("pumper", {status: "B"});
+            console.log("OFF")
+        }
+    });
+</script>
+<script>
+    var canvasSM = document.getElementById('SoilMoistureChart');
+    var canvasT = document.getElementById('TemperatureChart');
+    var canvasH= document.getElementById('HumidityChart');
+    var dataSM = {
+        labels: [],
+        datasets: [
+            {
+                label: "Độ ẩm đất",
+                fill: false,
+                lineTension: 0.1,
+                backgroundColor: "rgba(75,192,192,0.4)",
+                //borderColor: "rgba(255,255,255,1)",
+                borderCapStyle: 'butt',
+                borderDash: [],
+                borderDashOffset: 0000,
+                borderJoinStyle: 'miter',
+                pointBorderColor: "white",
+                pointBackgroundColor: "#fff",
+                pointBorderWidth: 1,
+                pointHoverRadius: 5,
+                pointHoverBackgroundColor: "rgba(255,255,255,1)",
+                pointHoverBorderColor: "white",
+                pointHoverBorderWidth: 2,
+                pointRadius: 5,
+                pointHitRadius: 10,
+                data: []
+            }
+        ]
+    };
+    var dataT = {
+        labels: [],
+        datasets: [
+            {
+                label: "Nhiệt độ",
+                fill: false,
+                lineTension: 0.1,
+                backgroundColor: "rgba(75,192,192,0.4)",
+                //borderColor: "rgba(255,255,255,1)",
+                borderCapStyle: 'butt',
+                borderDash: [],
+                borderDashOffset: 0000,
+                borderJoinStyle: 'miter',
+                pointBorderColor: "white",
+                pointBackgroundColor: "#fff",
+                pointBorderWidth: 1,
+                pointHoverRadius: 5,
+                pointHoverBackgroundColor: "rgba(255,255,255,1)",
+                pointHoverBorderColor: "white",
+                pointHoverBorderWidth: 2,
+                pointRadius: 5,
+                pointHitRadius: 10,
+                data: []
+            }
+        ]
+    };
+    var dataH = {
+        labels: [],
+        datasets: [
+            {
+                label: "Độ ẩm không khí",
+                fill: false,
+                lineTension: 0.1,
+                backgroundColor: "rgba(75,192,192,0.4)",
+                //borderColor: "rgba(255,255,255,1)",
+                borderCapStyle: 'butt',
+                borderDash: [],
+                borderDashOffset: 0000,
+                borderJoinStyle: 'miter',
+                pointBorderColor: "white",
+                pointBackgroundColor: "#fff",
+                pointBorderWidth: 1,
+                pointHoverRadius: 5,
+                pointHoverBackgroundColor: "white",
+                pointHoverBorderColor: "white",
+                pointHoverBorderWidth: 2,
+                pointRadius: 5,
+                pointHitRadius: 10,
+                data: []
+            }
+        ]
+    };
+
+    function addDataToChart(chart, data){
+        var time = new Date().toLocaleTimeString();
+        chart.data.datasets[0].data.push(data);
+        chart.data.labels.push(time);
+        chart.update();
+    }
+
+    var option = {
+        showLines: true,
+        display: false
+    };
+    var myLineChartSM = Chart.Line(canvasSM,{
+        data:dataSM,
+        options: option
+    });
+    var myLineChartT = Chart.Line(canvasT,{
+        data:dataT,
+        options: option
+    });
+    var myLineChartH = Chart.Line(canvasH,{
+        data:dataH,
+        options: option,
+        color: ["white"]
+    });
+
+</script>
+<script>
+    var socket = io(location.host);
+    socket.on("newData", (data) => {
+      $("#soil-moisture").text("" + data.soilmoisture);
+      addDataToChart(myLineChartSM, data.soilmoisture);
+      $("#temperature").text("" + data.temperature);
+      addDataToChart(myLineChartT, data.temperature);
+      $("#humidity").text("" + data.humidity);
+      addDataToChart(myLineChartH, data.humidity);
+      socket.emit("getavg");
+    });
+    socket.on("avgResult", (result) => {
+      if(result.id == 1)
+        $("#avg-t").text("" + result.value.toFixed(2))
+      if(result.id == 2)
+        $("#avg-h").text("" + result.value.toFixed(2))
+      if(result.id == 3)
+        $("#avg-sm").text("" + result.value.toFixed(2))
+    })
+    // code o dau ban
+  </script>
