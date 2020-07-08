@@ -66,7 +66,7 @@ io.on("connection", (socket) => {
                 value: t
             }
             device.addData(newData)
-            console.log(newData)
+            // console.log(newData)
         }
         if(data.humidity != h && data.humidity){
             h = data.humidity
@@ -75,7 +75,7 @@ io.on("connection", (socket) => {
                 value: h
             }
             device.addData(newData)
-            console.log(newData)
+           // console.log(newData)
         }
         if(data.soilmoisture != sm && data.soilmoisture){
             sm = data.soilmoisture
@@ -84,13 +84,12 @@ io.on("connection", (socket) => {
                 value: sm
             }
             device.addData(newData)
-            
-            console.log(newData)
+            // console.log(newData)
         }
         socket.broadcast.emit("newData", data);
     });
     socket.on("pumper", (data) => {
-        console.log(data.status)
+        //console.log(data.status)
         io.emit("newCommand", data);
     });
     socket.on("getavg", () => {
@@ -105,7 +104,7 @@ io.on("connection", (socket) => {
                     value: data[0].result
                 }
                 io.emit("avgResult", result)
-                console.log(result)
+               // console.log(result)
             }).catch((err) => {
             })
         }
@@ -116,7 +115,7 @@ io.on("connection", (socket) => {
                     value: data[0].result
                 }
                 io.emit("avgResult", result)
-                console.log(result)
+               // console.log(result)
             }).catch((err) => {
             })
         }
@@ -127,7 +126,7 @@ io.on("connection", (socket) => {
                     value: data[0].result
                 }
                 io.emit("avgResult", result)
-                console.log(result)
+               // console.log(result)
             }).catch((err) => {
             })
         }
@@ -138,3 +137,6 @@ io.on("connection", (socket) => {
 server.listen(port, host, () => {
     console.log(`Server is listening at ${host}:${port}`);
 });
+
+require('../WebServer/apps/common/cron')(io)
+
